@@ -1,0 +1,43 @@
+import React, { useState } from "react";
+import Protected from "../../components/Protected";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../lib/firebase";
+
+const ADMIN = process.env.NEXT_PUBLIC_ADMIN_EMAIL || process.env.ADMIN_EMAIL;
+
+export default function Admin() {
+  return (
+    <Protected>
+      {(user)=> user.email===ADMIN ? <AdminForm /> : <p>Not authorized</p>}
+    </Protected>
+  );
+}
+
+function AdminForm(){
+  const [title,setTitle]=useState("");
+  const [price,setPrice]=useState(499);
+  const [lectures,setLectures]=useState([{title:"Intro",url:""}]);
+
+  const addLecture=()=> setLectures([...lectures,{title:"",url:""}]);
+  const save=async()=>{
+    const docRef = await addDoc(collection(db,"courses"),{ title, price, lectures });
+    alert("Course created: "+docRef.id);
+  };
+
+  return (
+    <div style={{maxWidth:640}}>
+      <h2>Create Course</h2>
+      <input placeholder="Title" value={title} onChange={e=>setTitle(e.target.value)} />
+      <input type="number" placeholder="Price" value={price} onChange={e=>setPrice(Number(e.target.value))} />
+      <h3>Lectures</h3>
+      {lectures.map((l,idx)=>(
+        <div key={idx} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+          <input placeholder="Lecture title" value={l.title} onChange={e=>{const x=[...lectures];x[idx].title=e.target.value;setLectures(x);}} />
+          <input placeholder="Video URL" value={l.url} onChange={e=>{const x=[...lectures];x[idx].url=e.target.value;setLectures(x);}} />
+        </div>
+      ))}
+      <button onClick={addLecture}>+ Add lecture</button>
+      <button onClick={save}>Save</button>
+    </div>
+  );
+}
