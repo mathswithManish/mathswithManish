@@ -1,0 +1,11 @@
+your-project/
+├─ components/
+│  └─ VideoPlayer.js
+├─ pages/
+│  ├─ index.js
+│  └─ course/
+│     └─ [id].js
+├─ public/
+│  └─ videos/
+│     └─ sample.mp4
+├─ package.json
