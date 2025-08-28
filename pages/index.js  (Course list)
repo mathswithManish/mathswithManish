@@ -1,0 +1,26 @@
+import React, { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../lib/firebase";
+import Link from "next/link";
+
+export default function Home() {
+  const [courses, setCourses] = useState([]);
+  useEffect(()=>{
+    getDocs(collection(db,"courses")).then(snap=>{
+      setCourses(snap.docs.map(d=>({id:d.id,...d.data()})));
+    });
+  },[]);
+  return (
+    <>
+      <h1>Courses</h1>
+      <ul>
+        {courses.map(c=>(
+          <li key={c.id} style={{margin:"12px 0",padding:12,border:"1px solid #ddd",borderRadius:8}}>
+            <b>{c.title}</b> — ₹{c.price}
+            <div style={{marginTop:8}}><Link href={`/course/${c.id}`}>Open</Link></div>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
