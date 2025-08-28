@@ -1,0 +1,42 @@
+export function installAntiPiracy(userLabel="") {
+  if (typeof window === "undefined") return;
+  const onContext = e => e.preventDefault();
+  const onKey = e => {
+    const ctrl = e.ctrlKey || e.metaKey;
+    const block = [
+      (ctrl && ["s","p","u","c"].includes(e.key.toLowerCase())),
+      e.key === "F12",
+      (ctrl && e.shiftKey && ["i","j"].includes(e.key.toLowerCase()))
+    ].some(Boolean);
+    if (block) { e.preventDefault(); e.stopPropagation(); }
+  };
+  document.addEventListener("contextmenu", onContext);
+  document.addEventListener("keydown", onKey);
+
+  // Dynamic watermark overlay
+  const wm = document.createElement("div");
+  wm.style.position="fixed"; wm.style.left=0; wm.style.top=0;
+  wm.style.right=0; wm.style.bottom=0;
+  wm.style.pointerEvents="none"; wm.style.zIndex=99999; wm.style.opacity="0.15";
+  wm.style.userSelect="none"; wm.style.fontFamily="monospace";
+  document.body.appendChild(wm);
+
+  function draw(){
+    const now = new Date().toLocaleString();
+    const text = `${userLabel} • ${now}`;
+    wm.innerHTML="";
+    for(let i=0;i<32;i++){
+      const d=document.createElement("div");
+      d.textContent=text;
+      d.style.position="absolute";
+      d.style.transform="rotate(-20deg)";
+      d.style.fontSize=(16+Math.round(Math.random()*6))+"px";
+      d.style.left=(Math.random()*100)+"%";
+      d.style.top=(Math.random()*100)+"%";
+      wm.appendChild(d);
+    }
+  }
+  draw();
+  const t=setInterval(draw,6000);
+  return ()=>{ clearInterval(t); wm.remove(); document.removeEventListener("contextmenu",onContext); document.removeEventListener("keydown",onKey); };
+}
