@@ -1,0 +1,20 @@
+/ (repo root)
+├─ package.json
+├─ next.config.js
+├─ pages/
+│  ├─ _app.js
+│  ├─ index.js
+│  ├─ login.js
+│  ├─ dashboard.js
+│  ├─ admin/index.js
+│  ├─ course/[id].js
+│  └─ api/createOrder.js
+│     api/verifyPayment.js
+├─ components/NavBar.js
+│           Protected.js
+│           VideoPlayer.js
+├─ lib/appConfig.js
+│   firebase.js
+│   antiPiracy.js
+├─ styles.css
+└─ README.md (optional)
